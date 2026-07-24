@@ -18,10 +18,24 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
 
+    - name: Cache Gradle
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
+
     - name: Set up Gradle (install)
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/gradle-build-action@v2
       with:
         gradle-version: '7.5.1'
+
+    - name: Make gradlew executable (if present)
+      run: |
+        if [ -f ./gradlew ]; then
+          chmod +x ./gradlew || true
+        fi
 
     - name: Build Debug APK
       run: |
